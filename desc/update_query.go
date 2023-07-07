@@ -44,7 +44,14 @@ func extractUpdateArguments(value any, columnsToUpdate []string, primaryKey *Col
 	if err != nil {
 		return nil, err // return the error if finding arguments fails
 	}
-
+	
+	if len(columnsToUpdate) == 0 {
+		for _, arg := range args {
+			c := arg.Column
+			columnsToUpdate = append(columnsToUpdate, c.Name)
+		}
+	}
+	
 	if len(columnsToUpdate) > 0 { // if specific columns to update, then override the default behavior.
 		args = filterArguments(args, func(arg Argument) bool {
 			for _, onlyColumnName := range columnsToUpdate {
